@@ -4,6 +4,12 @@
 #include <windows.h>
 
 
+typedef struct
+{
+    char type;
+    int  score;
+} PLACE;
+
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
 
 char *read_binary (char * file_name,int n)
@@ -39,7 +45,7 @@ int find_elements_count(char * file_name)
 }
 
 
-void printing_map(int n,char visual_map[3+4*n][1+8*n]){
+void printing_map(int n,PLACE visual_map[3+4*n][1+8*n]){
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
@@ -53,60 +59,62 @@ void printing_map(int n,char visual_map[3+4*n][1+8*n]){
     {
         for(int x=0; x<n_x; x++)
         {
-                if(visual_map[y][x]==Energy)
+                if(visual_map[y][x].type==Energy)
                 {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_RED);
                 printf(" ");
                 SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
                 }
-                if(visual_map[y][x]==Mitosis)
+                if(visual_map[y][x].type==Mitosis)
                 {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN);
                 printf(" ");
                   SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
                 }
-                if(visual_map[y][x]==Normal)
+                if(visual_map[y][x].type==Normal)
                 {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY);
                 printf(" ");
                   SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
                 }
-                 if(visual_map[y][x]==Forbidden)
+                 if(visual_map[y][x].type==Forbidden)
                 {
                 printf(" ");
                 continue;
                 }
 
 
-              printf("%c",visual_map[y][x]);
+              printf("%c",visual_map[y][x].type);
         }
         printf("\n");
     }
 }
 
 
-int init_table(int n, char file_name[50] , char str[n*n] ,char visual_map[3+4*n][1+8*n] )
+int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n][1+8*n] )
 {
 
     int n_x=1+8*n;
     int n_y = 3+4*n;
 
     for (int i=0; i<n_y; i++)
-        for(int j=0; j<n_x; j++)
-            visual_map[i][j]=' ';
+        for(int j=0; j<n_x; j++){
+            visual_map[i][j].type=' ';
+            visual_map[i][j].score=0;
+        }
 
     for (int y=0; y<n_y; y++)
         for(int x=0; x<n_x; x++)
         {
             if (y%4==0 && x%16<10 && x%2==0)
-                visual_map[y][x]=frame;
+                visual_map[y][x].type=frame;
             if (y%4==2 && x%16>8 && x%2==0)
-                visual_map[y][x]=frame;
+                visual_map[y][x].type=frame;
             if(x%8==0)
-                visual_map[y][x]=frame;
+                visual_map[y][x].type=frame;
         }
 
 
@@ -115,11 +123,22 @@ int init_table(int n, char file_name[50] , char str[n*n] ,char visual_map[3+4*n]
     for(int i=0;i<4*n;i+=4)
         for(int j=0;j<n;j++)
     {
-        visual_map[yy-i+2*(j%2)][8*j+4]=visual_map[yy-i+2*(j%2)][8*j+3]=visual_map[yy-i+2*(j%2)][8*j+5]=visual_map[yy-i+2*(j%2)][8*j+2]=visual_map[yy-i+2*(j%2)][8*j+1]=visual_map[yy-i+2*(j%2)][8*j+6]=visual_map[yy-i+2*(j%2)][8*j+7]=str[element_str];
-        visual_map[yy-i+2*(j%2)-1][8*j+4]=visual_map[yy-i+2*(j%2)-1][8*j+3]=visual_map[yy-i+2*(j%2)-1][8*j+5]=visual_map[yy-i+2*(j%2)-1][8*j+2]=visual_map[yy-i+2*(j%2)-1][8*j+1]=visual_map[yy-i+2*(j%2)-1][8*j+6]=visual_map[yy-i+2*(j%2)-1][8*j+7]=str[element_str];
-        visual_map[yy-i+2*(j%2)+1][8*j+4]=visual_map[yy-i+2*(j%2)+1][8*j+3]=visual_map[yy-i+2*(j%2)+1][8*j+5]=visual_map[yy-i+2*(j%2)+1][8*j+2]=visual_map[yy-i+2*(j%2)+1][8*j+1]=visual_map[yy-i+2*(j%2)+1][8*j+6]=visual_map[yy-i+2*(j%2)+1][8*j+7]=str[element_str];
+
+      if (str[element_str]==Energy)
+            visual_map[yy-i+2*(j%2)][8*j+4].score=100;
+      for (int k=-1;k<=1;k++)
+      for (int g=1;g<8;g++)
+         visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
         element_str++;
     }
 
+}
+
+int printing_enrjes(int n,PLACE visual_map[3+4*n][1+8*n])
+{
+    for (int i=0;i<3+4*n;i++)
+        for (int j=0;j<1+8*n;j++)
+        if (visual_map[i][j].score>0)
+        printf("(%d,%d)   enerjy = %d\n",n-(i-2)/4-1,(j-4)/8,visual_map[i][j].score);
 
 }

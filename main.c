@@ -4,6 +4,8 @@
 #include "visual_map.h"
 
 
+enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
+
 int main()
 {
     printf("enter file name\n");
@@ -15,8 +17,13 @@ int main()
     char *str;
     str = read_binary(file_name,n);
 
-    char visual_map[3+4*n][1+8*n];
+    PLACE visual_map[3+4*n][1+8*n];
     init_table(n,file_name,str,visual_map);
+
+  //  int count_enj = find_count_enj(n,str);
+    //ENERJY_CELL arr_cell_enj[count_enj];
     printing_map(n,visual_map);
+
+   printing_enrjes(n,visual_map);
 
 }
