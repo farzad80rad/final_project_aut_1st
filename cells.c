@@ -17,8 +17,10 @@ typedef struct cell CELL;
 
 typedef struct
 {
+    int fullnes;
     char type;
     char  score[4];
+
 } PLACE;
 
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
@@ -56,26 +58,30 @@ CELL* make_list(int count_cells)
     return list;
 }
 
-void naming(char name[8])
+void naming(char name[8],int count_cells)
 {
-    char names[18][8]= {"sam","bili","bob","ali","jany","warior","jacky","mom","wow","jizz","dany","popy","nazy","iran","danis","venom","batman","halk"};
-    static int used[18]={-1},element=0;
+    static int counter=-1;
+    counter++;
+    char names[][8]= {"sam","bili","bob","ali","jany","warior","jacky","mom","wow","jizz","dany","popy","nazy","iran","danis","venom","batman","halk","boy","farzad","hadi","A.H","armin","sina","killer","nooo","yeees","fish","cat","you","me","they","aahhh"};
+    static int used[33]={-1},element=0;
     int oper;
-    printf("1-make the name randomly     2-make it yourself\n ");
+    printf("%d  1-make the name randomly     2-make it yourself\n ",counter%count_cells +1);
     scanf("%d",&oper);
     if (oper==1)
     {
         while(1)
         {
-            int temp;
-            temp=rand()%18;
-            for(int i=0;i<18;i++)
+            int temp,flag=1;
+            temp=rand()%33;
+            for(int i=0;i<33;i++)
                 if(temp==used[i])
-                    continue;
+                    flag=0;
+                    if(flag){
             used[element]=temp;
             strcpy(name,names[temp]);
             element++;
             break;
+                    }
         }
 
     }
@@ -92,6 +98,7 @@ void naming(char name[8])
 CELL* make_add_random(int count_cell,int n,PLACE visual_map[3+4*n][1+8*n],int enerjyi)
 {
 
+printf("\n\n");
 
     CELL* list=make_list(count_cell);
     CELL* current;
@@ -115,17 +122,12 @@ CELL* make_add_random(int count_cell,int n,PLACE visual_map[3+4*n][1+8*n],int en
             }
 
         }
-        while(visual_map[tempy][tempx].type==Forbidden || check_repeat(list,tempx,tempy));
+        while(visual_map[tempy][tempx].fullnes==1);
+        visual_map[tempy][tempx].fullnes=1;
         current->x=tempx;
         current->y=tempy;
-        naming(current->name);
+        naming(current->name,count_cell);
         current->enerjy=enerjyi;
     }
     return list;
 }
-
-
-
-
-
-

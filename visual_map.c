@@ -20,6 +20,7 @@ typedef struct cell CELL;
 
 typedef struct
 {
+    int fullnes;
     char type;
     char  score[4];
 } PLACE;
@@ -27,7 +28,7 @@ typedef struct
 
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
 
- int search_cells_print(int xi, int yi,CELL *list)
+ int search_cells_print(int xi, int yi,CELL *list,int teem)
  {
 
          HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -40,7 +41,10 @@ enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
      for (current =list ;current!=NULL;current=current->next)
         if(current->x==xi && current->y==yi)
             {
+                if(teem==1)
                 SetConsoleTextAttribute(hConsole, 6);
+                else
+                SetConsoleTextAttribute(hConsole, 9);
                 printf("%d",current->number);
                 return 1;
             }
@@ -80,7 +84,7 @@ int find_elements_count(char * file_name)
 }
 
 
-void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list){
+void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL* list2){
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
@@ -95,7 +99,10 @@ void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list){
         for(int x=0; x<n_x; x++)
         {
 
-                if(search_cells_print(x,y,list)){
+                if(search_cells_print(x,y,list,1)){
+                    continue;
+                }
+                if(search_cells_print(x,y,list2,2)){
                     continue;
                 }
 
@@ -152,6 +159,7 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
         for(int j=0; j<n_x; j++){
             visual_map[i][j].type=' ';
             strcpy(visual_map[i][j].score,"0");
+            visual_map[i][j].fullnes=0;
 
         }
 
@@ -178,8 +186,11 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
            // printf("%s\n",visual_map[yy-i+2*(j%2)][8*j+4].score);
 
       for (int k=-1;k<=1;k++)
-      for (int g=1;g<8;g++)
+      for (int g=1;g<8;g++){
          visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
+         if(str[element_str]==Forbidden)
+            visual_map[yy-i+2*(j%2)+k][8*j+g].fullnes=1;
+      }
         element_str++;
     }
 
