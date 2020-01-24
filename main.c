@@ -4,6 +4,7 @@
 #include "visual_map.h"
 #include "cells.h"
 #include <time.h>
+#include "move.h"
 
 
 
@@ -95,11 +96,30 @@ void single_game(void)
 
 
     list = make_add_random(count_cells,n,visual_map,40);
+    int oper=1;
+    int cell_choosed;
+
+            system("cls");
+    printing_map(n,visual_map,list,list2);
+    while(oper!=4){
+            printf(" [1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
+    //printf("enter oper\n");
+    scanf("%d",&oper);
     system("cls");
     printing_map(n,visual_map,list,list2);
-    for (CELL * current=list;current!=NULL;current=current->next)
-        printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+    CELL * current;
 
+    for ( current=list;current!=NULL;current=current->next)
+        printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+    printf("choose a cell\n");
+    scanf("%d",&cell_choosed);
+
+    for ( current=list;current->number!=cell_choosed;current=current->next);
+
+    move(current,n,visual_map,list,list2);
+    system("cls");
+    printing_map(n,visual_map,list,list2);
+    }
 }
 
 
