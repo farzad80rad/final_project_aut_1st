@@ -5,13 +5,47 @@
 #include <string.h>
 
 
+
+struct cell
+{
+    int x;
+    int y;
+    int number;
+    char name[8];
+    int enerjy;
+    struct cell *next;
+};
+typedef struct cell CELL;
+
+
 typedef struct
 {
     char type;
     char  score[4];
 } PLACE;
 
+
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
+
+ int search_cells_print(int xi, int yi,CELL *list)
+ {
+
+         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
+    int originalAttrs = ConsoleInfo.wAttributes;
+
+
+     CELL * current;
+     for (current =list ;current!=NULL;current=current->next)
+        if(current->x==xi && current->y==yi)
+            {
+                SetConsoleTextAttribute(hConsole, 6);
+                printf("%d",current->number);
+                return 1;
+            }
+    return 0;
+ }
 
 char *read_binary (char * file_name,int n)
 {
@@ -46,7 +80,7 @@ int find_elements_count(char * file_name)
 }
 
 
-void printing_map(int n,PLACE visual_map[3+4*n][1+8*n]){
+void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list){
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
@@ -60,6 +94,11 @@ void printing_map(int n,PLACE visual_map[3+4*n][1+8*n]){
     {
         for(int x=0; x<n_x; x++)
         {
+
+                if(search_cells_print(x,y,list)){
+                    continue;
+                }
+
                 if(visual_map[y][x].type==Energy)
                 {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_RED);
@@ -93,6 +132,7 @@ void printing_map(int n,PLACE visual_map[3+4*n][1+8*n]){
                 printf(" ");
                 continue;
                 }
+
 
 
               printf("%c",visual_map[y][x].type);

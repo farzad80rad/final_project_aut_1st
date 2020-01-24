@@ -6,16 +6,16 @@
 #include <time.h>
 
 
+
 enum chars_map {frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
 
-int main()
+
+void single_game(void)
 {
-
-    srand(time(0));
-
-    printf("enter file name\n");
-    char file_name[50];
+    system("cls");
     int n;
+    printf("enter map file name\n");
+    char file_name[50];
     scanf("%s",file_name);
     n=find_elements_count(file_name);
 
@@ -24,17 +24,50 @@ int main()
 
     PLACE visual_map[3+4*n][1+8*n];
     init_table(n,file_name,str,visual_map);
+    CELL* list=NULL;
 
-    printing_map(n,visual_map);
+
+    printing_map(n,visual_map,list);
 
 
-    int count_cellsX,count_cellsY;
-    char map_player[3+4*n][1+8*n];
+    int count_cells;
+    do{
+    printf("enter count of cells_the limitation is 10 \n");
+    scanf("%d",&count_cells);
+    }while(count_cells>9);
 
-    CELL* list;
-    list = make_add_random(3,n,visual_map,40);
+
+    list = make_add_random(count_cells,n,visual_map,40);
+    system("cls");
+    printing_map(n,visual_map,list);
     for (CELL * current=list;current!=NULL;current=current->next)
-        printf("(%d,%d)  %s  %d\n",n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+        printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+
+}
+
+
+int main()
+{
+    srand(time(0));
+    int a;
+    printf("1- load\n2- new single game\n3- new multi player game\n4- exit\n");
+    scanf("%d",&a);
+    if (a==2)
+    {
+       single_game();
+    }
+    if (a==1)
+    {
+
+    }
+    if(a==3)
+    {
+
+    }
+    if(a==4)
+    {
+
+    }
 
 
 }
