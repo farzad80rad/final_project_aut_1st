@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <string.h>
 
 
 typedef struct
 {
     char type;
-    int  score;
+    char  score[4];
 } PLACE;
 
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
@@ -62,7 +63,14 @@ void printing_map(int n,PLACE visual_map[3+4*n][1+8*n]){
                 if(visual_map[y][x].type==Energy)
                 {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_RED);
-                printf(" ");
+                    if(strcmp(visual_map[y+1][x+3].score,"0"))
+                printf("%c",visual_map[y+1][x+3].score[0]);
+                else if(strcmp(visual_map[y+1][x+2].score,"0"))
+                printf("%c",visual_map[y+1][x+2].score[1]);
+                else if(strcmp(visual_map[y+1][x+1].score,"0"))
+                printf("%c",visual_map[y+1][x+1].score[2]);
+                else
+                    printf(" ");
                 SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
                 }
@@ -103,7 +111,8 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
     for (int i=0; i<n_y; i++)
         for(int j=0; j<n_x; j++){
             visual_map[i][j].type=' ';
-            visual_map[i][j].score=0;
+            strcpy(visual_map[i][j].score,"0");
+
         }
 
     for (int y=0; y<n_y; y++)
@@ -125,7 +134,9 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
     {
 
       if (str[element_str]==Energy)
-            visual_map[yy-i+2*(j%2)][8*j+4].score=100;
+            sprintf(visual_map[yy-i+2*(j%2)][8*j+4].score,"%d",100);
+           // printf("%s\n",visual_map[yy-i+2*(j%2)][8*j+4].score);
+
       for (int k=-1;k<=1;k++)
       for (int g=1;g<8;g++)
          visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
@@ -138,7 +149,7 @@ int printing_enrjes(int n,PLACE visual_map[3+4*n][1+8*n])
 {
     for (int i=0;i<3+4*n;i++)
         for (int j=0;j<1+8*n;j++)
-        if (visual_map[i][j].score>0)
-        printf("(%d,%d)   enerjy = %d\n",n-(i-2)/4-1,(j-4)/8,visual_map[i][j].score);
+        if (strcmp(visual_map[i][j].score,"0"))
+        printf("(%d,%d)   enerjy = %s\n",n-(i-2)/4-1,(j-4)/8,visual_map[i][j].score);
 
 }
