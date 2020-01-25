@@ -159,7 +159,7 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
         for(int j=0; j<n_x; j++){
             visual_map[i][j].type=' ';
             strcpy(visual_map[i][j].score,"0");
-            visual_map[i][j].fullnes=0;
+            visual_map[i][j].fullnes=1;
 
         }
 
@@ -188,8 +188,8 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
       for (int k=-1;k<=1;k++)
       for (int g=1;g<8;g++){
          visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
-         if(str[element_str]==Forbidden)
-            visual_map[yy-i+2*(j%2)+k][8*j+g].fullnes=1;
+         if(str[element_str]!=Forbidden)
+            visual_map[yy-i+2*(j%2)+k][8*j+g].fullnes=0;
       }
         element_str++;
     }

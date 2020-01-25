@@ -254,6 +254,11 @@ void single_game(void)
         case 1:
             movment_1(n,visual_map,list,list2,cell_choosed);
             break;
+        case 2:
+            count_cells+=mitosis_action(n,visual_map,list,list2,1,cell_choosed,count_cells,count_cells);
+                            system("cls");
+                printing_map(n,visual_map,list,list2);
+            break;
         case 3:
             if(boost_enerjy(cell_choosed,n,visual_map,list,list2,1)){
                 system("cls");
@@ -262,7 +267,6 @@ void single_game(void)
             continue;
             }
             system("cls");
-            boost_enerjy(cell_choosed,n,visual_map,list,list2,1);
             printing_map(n,visual_map,list,list2);
             break;
         case 5:
