@@ -77,8 +77,8 @@ int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * 
 
     else
     {
-            cell_gain->enerjy+=temp_enerj;
-            temp_enerj  = 0;
+        cell_gain->enerjy+=temp_enerj;
+        temp_enerj  = 0;
     }
     char temp_str[4];
     sprintf(temp_str,"%d",temp_enerj);
@@ -167,13 +167,13 @@ int mitosis_action(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2,i
     if(cell_mitosis->enerjy<80)
         return 0;
 
-        if(turn%2==1){
-            if(count_cells1==9)
+    if(turn%2==1)
+    {
+        if(count_cells1==9)
             return 0;
-        }
-        else
-            if(count_cells2==9)
-            return 0;
+    }
+    else if(count_cells2==9)
+        return 0;
 
     int noooooooooob=0;
     int resx,resy,temp;
@@ -181,20 +181,21 @@ int mitosis_action(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2,i
     {
         temp = rand()%6+1;
         noooooooooob++;
-       if(noooooooooob ==100){
-        printf("not allowed\n");
-       return 0;
-       }
+        if(noooooooooob ==100)
+        {
+            printf("not allowed\n");
+            return 0;
+        }
     }
     while(permision_move(cell_mitosis,n,visual_map,temp));
 
-if (turn%2 ==1)
-   current =  make_add_nod(cell_mitosis->x,cell_mitosis->y,list,count_cells1)  ;
-         else
-      current = make_add_nod(cell_mitosis->x,cell_mitosis->y,list2,count_cells2);
+    if (turn%2 ==1)
+        current =  make_add_nod(cell_mitosis->x,cell_mitosis->y,list,count_cells1)  ;
+    else
+        current = make_add_nod(cell_mitosis->x,cell_mitosis->y,list2,count_cells2);
 
-      move_mitos(current,n,visual_map,temp);
-      cell_mitosis->enerjy=40;
+    move_mitos(current,n,visual_map,temp);
+    cell_mitosis->enerjy=40;
 
 
     return 1;

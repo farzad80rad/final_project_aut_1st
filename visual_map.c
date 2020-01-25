@@ -28,28 +28,28 @@ typedef struct
 
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
 
- int search_cells_print(int xi, int yi,CELL *list,int teem)
- {
+int search_cells_print(int xi, int yi,CELL *list,int teem)
+{
 
-         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
     int originalAttrs = ConsoleInfo.wAttributes;
 
 
-     CELL * current;
-     for (current =list ;current!=NULL;current=current->next)
+    CELL * current;
+    for (current =list ; current!=NULL; current=current->next)
         if(current->x==xi && current->y==yi)
-            {
-                if(teem==1)
+        {
+            if(teem==1)
                 SetConsoleTextAttribute(hConsole, 6);
-                else
+            else
                 SetConsoleTextAttribute(hConsole, 9);
-                printf("%d",current->number);
-                return 1;
-            }
+            printf("%d",current->number);
+            return 1;
+        }
     return 0;
- }
+}
 
 char *read_binary (char * file_name,int n)
 {
@@ -59,10 +59,10 @@ char *read_binary (char * file_name,int n)
     fseek(fpin,sizeof(unsigned int),SEEK_SET);
     char *str;
     str = (char*)malloc(sizeof(char)*n*n);
-        fread(str,sizeof(char),n*n,fpin);
+    fread(str,sizeof(char),n*n,fpin);
     fclose(fpin);
     //for (int i=0;i<n*n;i++)
-      //  printf("%c ",str[i]);
+    //  printf("%c ",str[i]);
     return str;
 
 }
@@ -71,20 +71,21 @@ char *read_binary (char * file_name,int n)
 int find_elements_count(char * file_name)
 {
     FILE *fpin = fopen(file_name,"rb");
-    if (fpin==NULL){
+    if (fpin==NULL)
+    {
         printf("not such a file\n");
         return NULL;
     }
     unsigned int count;
     fread(&count,4,1,fpin);
-    //printf("%d\n",count);
     fclose(fpin);
-        //printf("1");
+
     return count;
 }
 
 
-void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL* list2){
+void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL* list2)
+{
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
@@ -99,64 +100,67 @@ void printing_map(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL* list2){
         for(int x=0; x<n_x; x++)
         {
 
-                if(search_cells_print(x,y,list,1)){
-                    continue;
-                }
-                if(search_cells_print(x,y,list2,2)){
-                    continue;
-                }
+            if(search_cells_print(x,y,list,1))
+            {
+                continue;
+            }
+            if(search_cells_print(x,y,list2,2))
+            {
+                continue;
+            }
 
-                if(visual_map[y][x].type==Energy)
-                {
+            if(visual_map[y][x].type==Energy)
+            {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_RED);
-                    if(strcmp(visual_map[y+1][x+3].score,"0"))
-                printf("%c",visual_map[y+1][x+3].score[0]);
+                if(strcmp(visual_map[y+1][x+3].score,"0"))
+                    printf("%c",visual_map[y+1][x+3].score[0]);
                 else if(strcmp(visual_map[y+1][x+2].score,"0"))
-                printf("%c",visual_map[y+1][x+2].score[1]);
+                    printf("%c",visual_map[y+1][x+2].score[1]);
                 else if(strcmp(visual_map[y+1][x+1].score,"0"))
-                printf("%c",visual_map[y+1][x+1].score[2]);
+                    printf("%c",visual_map[y+1][x+1].score[2]);
                 else
                     printf(" ");
                 SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
-                }
-                if(visual_map[y][x].type==Mitosis)
-                {
+            }
+            if(visual_map[y][x].type==Mitosis)
+            {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN);
                 printf(" ");
-                  SetConsoleTextAttribute(hConsole, originalAttrs);
+                SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
-                }
-                if(visual_map[y][x].type==Normal)
-                {
+            }
+            if(visual_map[y][x].type==Normal)
+            {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY);
                 printf(" ");
-                  SetConsoleTextAttribute(hConsole, originalAttrs);
+                SetConsoleTextAttribute(hConsole, originalAttrs);
                 continue;
-                }
-                 if(visual_map[y][x].type==Forbidden)
-                {
+            }
+            if(visual_map[y][x].type==Forbidden)
+            {
                 printf(" ");
                 continue;
-                }
+            }
 
 
 
-              printf("%c",visual_map[y][x].type);
+            printf("%c",visual_map[y][x].type);
         }
         printf("\n");
     }
 }
 
 
-int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n][1+8*n] )
+int init_table(int n, char file_name[50], char str[n*n],PLACE visual_map[3+4*n][1+8*n] )
 {
 
     int n_x=1+8*n;
     int n_y = 3+4*n;
 
     for (int i=0; i<n_y; i++)
-        for(int j=0; j<n_x; j++){
+        for(int j=0; j<n_x; j++)
+        {
             visual_map[i][j].type=' ';
             strcpy(visual_map[i][j].score,"0");
             visual_map[i][j].fullnes=1;
@@ -177,30 +181,31 @@ int init_table(int n, char file_name[50] , char str[n*n] ,PLACE visual_map[3+4*n
 
     int element_str=0;
     int yy=4*n-2;
-    for(int i=0;i<4*n;i+=4)
-        for(int j=0;j<n;j++)
-    {
+    for(int i=0; i<4*n; i+=4)
+        for(int j=0; j<n; j++)
+        {
 
-      if (str[element_str]==Energy)
-            sprintf(visual_map[yy-i+2*(j%2)][8*j+4].score,"%d",100);
-           // printf("%s\n",visual_map[yy-i+2*(j%2)][8*j+4].score);
+            if (str[element_str]==Energy)
+                sprintf(visual_map[yy-i+2*(j%2)][8*j+4].score,"%d",100);
+            // printf("%s\n",visual_map[yy-i+2*(j%2)][8*j+4].score);
 
-      for (int k=-1;k<=1;k++)
-      for (int g=1;g<8;g++){
-         visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
-         if(str[element_str]!=Forbidden)
-            visual_map[yy-i+2*(j%2)+k][8*j+g].fullnes=0;
-      }
-        element_str++;
-    }
+            for (int k=-1; k<=1; k++)
+                for (int g=1; g<8; g++)
+                {
+                    visual_map[yy-i+2*(j%2)+k][8*j+g].type=str[element_str];
+                    if(str[element_str]!=Forbidden)
+                        visual_map[yy-i+2*(j%2)+k][8*j+g].fullnes=0;
+                }
+            element_str++;
+        }
 
 }
 
 int printing_enrjes(int n,PLACE visual_map[3+4*n][1+8*n])
 {
-    for (int i=0;i<3+4*n;i++)
-        for (int j=0;j<1+8*n;j++)
-        if (strcmp(visual_map[i][j].score,"0"))
-        printf("(%d,%d)   enerjy = %s\n",n-(i-2)/4-1,(j-4)/8,visual_map[i][j].score);
+    for (int i=0; i<3+4*n; i++)
+        for (int j=0; j<1+8*n; j++)
+            if (strcmp(visual_map[i][j].score,"0"))
+                printf("(%d,%d)   enerjy = %s\n",n-(i-2)/4-1,(j-4)/8,visual_map[i][j].score);
 
 }

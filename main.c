@@ -5,6 +5,7 @@
 #include "cells.h"
 #include <time.h>
 #include "move.h"
+#include "load_save.h"
 
 
 
@@ -63,12 +64,87 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
 
         for ( current=list2; current->number!=cell_choosed; current=current->next);
 
-       *turn+= move(current,n,visual_map,list,list2);
+        *turn+= move(current,n,visual_map,list,list2);
         system("cls");
         printing_map(n,visual_map,list,list2);
 
     }
 
+}
+
+
+ void  load_mood_game_1(int n,CELL* list,PLACE visual_map[3+4*n][1+8*n] )
+ {
+         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
+    int originalAttrs = ConsoleInfo.wAttributes;
+
+    system("cls");
+                                                     // int n;
+    CELL *list2=NULL;
+
+    printing_map(n,visual_map,list,list2);
+
+    int count_cells=0;
+
+    for(CELL * current = list;current != NULL; current=current->next)
+        count_cells++;
+
+    int oper=1,flag =1;
+    int cell_choosed;
+
+    system("cls");
+    printing_map(n,visual_map,list,list2);
+    while(flag)
+    {
+
+        for (CELL * current=list; current!=NULL; current=current->next)
+        {
+            SetConsoleTextAttribute(hConsole, 6);
+            printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+            SetConsoleTextAttribute(hConsole, originalAttrs);
+        }
+
+        int cell_choosed;
+        printf("choose a cell\n");
+        scanf("%d",&cell_choosed);
+
+
+        printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
+        scanf("%d",&oper);
+        switch (oper)
+        {
+        case 1:
+            movment_1(n,visual_map,list,list2,cell_choosed);
+            break;
+        case 2:
+            count_cells+=mitosis_action(n,visual_map,list,list2,1,cell_choosed,count_cells,count_cells);
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            break;
+        case 3:
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,1))
+            {
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+                continue;
+            }
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            break;
+        case 4:
+            save_map(n,visual_map);
+            save_player(list,count_cells,1);
+            save_mood(1);
+            break;
+        case 5:
+            flag=0;
+            break;
+        }
+    }
+    system("cls");
 }
 
 
@@ -159,24 +235,25 @@ void multiplay_game(void)
         scanf("%d",&cell_choosed);
 
 
-            printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
-    //printf("enter oper\n");
-            scanf("%d",&oper);
+        printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
+        //printf("enter oper\n");
+        scanf("%d",&oper);
 
-            int temp_count;
+        int temp_count;
         switch (oper)
         {
         case 1:
-           movment_2(n,visual_map,list,list2,&turn,cell_choosed);
+            movment_2(n,visual_map,list,list2,&turn,cell_choosed);
             break;
         case 2:
             temp_count=mitosis_action(n,visual_map,list,list2,turn,cell_choosed,count_cell1,count_cell2);
             if(turn%2==1)
-            count_cell1+=temp_count;
+                count_cell1+=temp_count;
             else
                 count_cell2+=temp_count;
 
-            if(temp_count==0){
+            if(temp_count==0)
+            {
                 system("cls");
                 printing_map(n,visual_map,list,list2);
                 printf("not allowed\n");
@@ -186,11 +263,12 @@ void multiplay_game(void)
             printing_map(n,visual_map,list,list2);
             break;
         case 3:
-            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,turn)){
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,turn))
+            {
                 system("cls");
                 printing_map(n,visual_map,list,list2);
                 printf("not allowed\n");
-            continue;
+                continue;
             }
             system("cls");
             printing_map(n,visual_map,list,list2);
@@ -274,18 +352,24 @@ void single_game(void)
             break;
         case 2:
             count_cells+=mitosis_action(n,visual_map,list,list2,1,cell_choosed,count_cells,count_cells);
-                            system("cls");
-                printing_map(n,visual_map,list,list2);
+            system("cls");
+            printing_map(n,visual_map,list,list2);
             break;
         case 3:
-            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,1)){
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,1))
+            {
                 system("cls");
                 printing_map(n,visual_map,list,list2);
                 printf("not allowed\n");
-            continue;
+                continue;
             }
             system("cls");
             printing_map(n,visual_map,list,list2);
+            break;
+        case 4:
+            save_map(n,visual_map);
+            save_player(list,count_cells,1);
+            save_mood(1);
             break;
         case 5:
             flag=0;
@@ -311,6 +395,20 @@ int main()
 
         if (a==1)
         {
+            CELL *list=NULL,*list2=NULL;
+            int n,mood;
+            n=scan_n();
+            PLACE visual_map[3+4*n][1+8*n];
+
+            load_map(&n,visual_map);
+            mood = load_mood();
+
+            load_player(&list,1);
+            if(mood==2)
+            load_player(&list2,2);
+
+            if(mood==1)
+            load_mood_game_1(n,list,visual_map);
 
         }
 

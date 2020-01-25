@@ -63,8 +63,9 @@ void naming(char name[8],int count_cells)
     static int counter=-1;
     counter++;
     char names[][8]= {"sam","bili","bob","ali","jany","warior","jacky","mom","wow","jizz","dany","popy","nazy","iran","danis","venom","batman","halk","boy","farzad","hadi","A.H","armin","sina","killer","nooo","yeees","fish","cat","you","me","they","aahhh"
-                        "freind","BIJ","love","fire","water","ground","wind","book","CEIT","master","origin","dog","moon","sun","tree","~_~","-_-","+_+","=_=","hii","howwm","ice","github","int","float"};
-    static int used[58]={-1},element=0;
+                      "freind","BIJ","love","fire","water","ground","wind","book","CEIT","master","origin","dog","moon","sun","tree","~_~","-_-","+_+","=_=","hii","howwm","ice","github","int","float"
+                     };
+    static int used[58]= {-1},element=0;
     int oper;
     printf("%d  1-make the name randomly     2-make it yourself\n ",counter%count_cells +1);
     scanf("%d",&oper);
@@ -74,15 +75,16 @@ void naming(char name[8],int count_cells)
         {
             int temp,flag=1;
             temp=rand()%58;
-            for(int i=0;i<58;i++)
+            for(int i=0; i<58; i++)
                 if(temp==used[i])
                     flag=0;
-                    if(flag){
-            used[element]=temp;
-            strcpy(name,names[temp]);
-            element++;
-            break;
-                    }
+            if(flag)
+            {
+                used[element]=temp;
+                strcpy(name,names[temp]);
+                element++;
+                break;
+            }
         }
 
     }
@@ -99,7 +101,7 @@ void naming(char name[8],int count_cells)
 CELL* make_add_random(int count_cell,int n,PLACE visual_map[3+4*n][1+8*n],int enerjyi)
 {
 
-printf("\n\n");
+    printf("\n\n");
 
     CELL* list=make_list(count_cell);
     CELL* current;
