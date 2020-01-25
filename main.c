@@ -38,7 +38,7 @@ void gain_enerjy()
 }
 
 
-void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int turn,int cell_choosed)
+void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int * turn,int cell_choosed)
 {
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -48,12 +48,12 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
 
     CELL * current;
 
-    if(turn %2==1)
+    if(*turn %2==1)
     {
 
         for ( current=list; current->number!=cell_choosed; current=current->next);
 
-        move(current,n,visual_map,list,list2);
+        *turn+=move(current,n,visual_map,list,list2);
         system("cls");
         printing_map(n,visual_map,list,list2);
     }
@@ -63,7 +63,7 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
 
         for ( current=list2; current->number!=cell_choosed; current=current->next);
 
-        move(current,n,visual_map,list,list2);
+       *turn+= move(current,n,visual_map,list,list2);
         system("cls");
         printing_map(n,visual_map,list,list2);
 
@@ -116,7 +116,8 @@ void multiplay_game(void)
     list2 = make_add_random(count_cells,n,visual_map,40);
 
 
-
+    int count_cell1,count_cell2;
+    count_cell1=count_cell2=count_cells;
 
     int cell_choosed;
     int oper=1;
@@ -162,10 +163,27 @@ void multiplay_game(void)
     //printf("enter oper\n");
             scanf("%d",&oper);
 
+            int temp_count;
         switch (oper)
         {
         case 1:
-            movment_2(n,visual_map,list,list2,turn,cell_choosed);
+           movment_2(n,visual_map,list,list2,&turn,cell_choosed);
+            break;
+        case 2:
+            temp_count=mitosis_action(n,visual_map,list,list2,turn,cell_choosed,count_cell1,count_cell2);
+            if(turn%2==1)
+            count_cell1+=temp_count;
+            else
+                count_cell2+=temp_count;
+
+            if(temp_count==0){
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+                continue;
+            }
+            system("cls");
+            printing_map(n,visual_map,list,list2);
             break;
         case 3:
             if(boost_enerjy(cell_choosed,n,visual_map,list,list2,turn)){

@@ -68,7 +68,7 @@ int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * 
             temp_enerj-= 15;
             cell_gain->enerjy+=15;
         }
-        if(cell_gain->enerjy>85)
+        else
         {
             temp_enerj -= 100-cell_gain->enerjy;
             cell_gain->enerjy=100;
@@ -77,31 +77,8 @@ int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * 
 
     else
     {
-
-        if(cell_gain->enerjy<=85)
-        {
-            temp_enerj-= 15;
-            cell_gain->enerjy+=15;
-        }
-        if(cell_gain->enerjy>85)
-        {
-            temp_enerj -= 100-cell_gain->enerjy;
-            cell_gain->enerjy=100;
-        }
-    }
-
-    if(temp_enerj < 15)
-    {
-        if(cell_gain->enerjy<=85)
-        {
             cell_gain->enerjy+=temp_enerj;
-            temp_enerj=0;
-        }
-//        if(cell_gain->enerjy>85)
-//        {
-//            if(temp_enerj)
-//        }
-
+            temp_enerj  = 0;
     }
     char temp_str[4];
     sprintf(temp_str,"%d",temp_enerj);
@@ -225,15 +202,17 @@ if (turn%2 ==1)
 
 
 
-void move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2)
+int move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2)
 {
     int oper;
     do
     {
         system("cls");
         printing_map(n,visual_map,list,list2);
-        printf("[1]North\n[2]South\n[3]Northeast\n[4]Northwest\n[5]Southeast\n[6]Southwest\n");
+        printf("[1]North\n[2]South\n[3]Northeast\n[4]Northwest\n[5]Southeast\n[6]Southwest\n[7]EXIT\n");
         scanf("%d",&oper);
+        if(oper==7)
+            return 1;
     }
     while(permision_move(cell_move,n,visual_map,oper));
 
