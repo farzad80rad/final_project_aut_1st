@@ -38,6 +38,11 @@ int permision_move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],int ope
 
 }
 
+
+
+
+
+
 void move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2)
 {
     int oper;
