@@ -40,10 +40,13 @@ int permision_move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],int ope
 }
 
 
-int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * list)
+int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * list,CELL *list2,int turn)
 {
     CELL * cell_gain;
+    if(turn%2==1)
                 for ( cell_gain=list; cell_gain->number!=cell_choosed; cell_gain=cell_gain->next);
+                else
+                     for ( cell_gain=list2; cell_gain->number!=cell_choosed; cell_gain=cell_gain->next);
     if(cell_gain->enerjy==100)
         return -1;
 
@@ -98,6 +101,9 @@ int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * 
         sprintf(temp_str,"%d",temp_enerj);
         strcpy(visual_map[cell_gain->y][cell_gain->x].score,temp_str);
         return 0;
+
+            system("cls");
+        printing_map(n,visual_map,list,list2);
 
 }
 

@@ -20,8 +20,6 @@ void movment_1(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
     GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
     int originalAttrs = ConsoleInfo.wAttributes;
 
-//    system("cls");
-//    printing_map(n,visual_map,list,list2);
     CELL * current;
 
     for ( current=list; current->number!=cell_choosed; current=current->next);
@@ -40,7 +38,7 @@ void gain_enerjy()
 }
 
 
-void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int turn)
+void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int turn,int cell_choosed)
 {
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -48,24 +46,10 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
     GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
     int originalAttrs = ConsoleInfo.wAttributes;
 
-    system("cls");
-    printing_map(n,visual_map,list,list2);
     CELL * current;
-    int cell_choosed;
 
     if(turn %2==1)
     {
-
-        for (CELL * current=list; current!=NULL; current=current->next)
-        {
-            SetConsoleTextAttribute(hConsole, 6);
-            printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
-            SetConsoleTextAttribute(hConsole, originalAttrs);
-        }
-
-
-        printf("choose a cell\n");
-        scanf("%d",&cell_choosed);
 
         for ( current=list; current->number!=cell_choosed; current=current->next);
 
@@ -77,16 +61,6 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
     else
     {
 
-        for (CELL * current=list2; current!=NULL; current=current->next)
-        {
-            SetConsoleTextAttribute(hConsole, 9);
-            printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
-            SetConsoleTextAttribute(hConsole, originalAttrs);
-
-        }
-        printf("choose a cell\n");
-        scanf("%d",&cell_choosed);
-
         for ( current=list2; current->number!=cell_choosed; current=current->next);
 
         move(current,n,visual_map,list,list2);
@@ -96,6 +70,8 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
     }
 
 }
+
+
 
 void multiplay_game(void)
 {
@@ -142,35 +118,70 @@ void multiplay_game(void)
 
 
 
-
+    int cell_choosed;
     int oper=1;
     int turn=1;
+    int flag =1;
 
     system("cls");
     printing_map(n,visual_map,list,list2);
-    while(oper!=5)
+    while(flag)
     {
 
         if(turn%2==0)
         {
             SetConsoleTextAttribute(hConsole, 9);
-            printf("tern of player 1\n");
+            printf("tern of player 2\n");
+
+            for (CELL * current=list2; current!=NULL; current=current->next)
+            {
+                printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+
+            }
+            printf("\n");
             SetConsoleTextAttribute(hConsole, originalAttrs);
         }
         else
         {
+
             SetConsoleTextAttribute(hConsole, 6);
             printf("tern of player 1\n");
+
+            for (CELL * current=list; current!=NULL; current=current->next)
+            {
+                printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+            }
             SetConsoleTextAttribute(hConsole, originalAttrs);
         }
-        printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
-        //printf("enter oper\n");
-        scanf("%d",&oper);
+
+        printf("choose a cell\n");
+        scanf("%d",&cell_choosed);
+
+
+            printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
+    //printf("enter oper\n");
+            scanf("%d",&oper);
+
         switch (oper)
         {
         case 1:
-            movment_2(n,visual_map,list,list2,turn);
+            movment_2(n,visual_map,list,list2,turn,cell_choosed);
             break;
+        case 3:
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,turn)){
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+            continue;
+            }
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+
+
+            break;
+
+        case 4:
+            flag=0;
         }
         turn++;
     }
@@ -180,7 +191,7 @@ void multiplay_game(void)
 
 void single_game(void)
 {
-        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
     int originalAttrs = ConsoleInfo.wAttributes;
@@ -224,12 +235,12 @@ void single_game(void)
     while(flag)
     {
 
-            for (CELL * current=list; current!=NULL; current=current->next)
-    {
-        SetConsoleTextAttribute(hConsole, 6);
-        printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
-        SetConsoleTextAttribute(hConsole, originalAttrs);
-    }
+        for (CELL * current=list; current!=NULL; current=current->next)
+        {
+            SetConsoleTextAttribute(hConsole, 6);
+            printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+            SetConsoleTextAttribute(hConsole, originalAttrs);
+        }
 
         int cell_choosed;
         printf("choose a cell\n");
@@ -244,8 +255,14 @@ void single_game(void)
             movment_1(n,visual_map,list,list2,cell_choosed);
             break;
         case 3:
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,1)){
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+            continue;
+            }
             system("cls");
-            boost_enerjy(cell_choosed,n,visual_map,list);
+            boost_enerjy(cell_choosed,n,visual_map,list,list2,1);
             printing_map(n,visual_map,list,list2);
             break;
         case 5:
