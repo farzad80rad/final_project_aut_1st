@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include "visual_map.h"
+#include <string.h>
 
 
 enum chars_map { frame=' ', Energy='1',Mitosis='2',Forbidden='3',Normal='4'};
@@ -10,27 +11,27 @@ int permision_move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],int ope
     switch(oper)
     {
     case 1:
-        if(visual_map[cell_move->y-4][cell_move->x].fullnes==1 || cell_move->y-4<=0)
+        if(visual_map[cell_move->y-4][cell_move->x].fullnes==1 || cell_move->y-4<=1)
             return 1;
         break;
     case 2:
-        if(visual_map[cell_move->y+4][cell_move->x].fullnes==1 || cell_move->y+4>=3+4*n)
+        if(visual_map[cell_move->y+4][cell_move->x].fullnes==1 || cell_move->y+4 >= 2+4*n)
             return 1;
         break;
     case 3:
-        if(visual_map[cell_move->y-2][cell_move->x+8].fullnes==1  || cell_move->y-2<=0 || cell_move->x+8>=1+8*n )
+        if(visual_map[cell_move->y-2][cell_move->x+8].fullnes==1  || cell_move->y-2<=1 || cell_move->x+8>=8*n )
             return 1;
         break;
     case 4:
-        if(visual_map[cell_move->y-2][cell_move->x-8].fullnes==1  ||  cell_move->y-2<=0 || cell_move->x-8<=0 )
+        if(visual_map[cell_move->y-2][cell_move->x-8].fullnes==1  ||  cell_move->y-2<=1 || cell_move->x-8<=0 )
             return 1;
         break;
     case 5:
-        if(visual_map[cell_move->y+2][cell_move->x+8].fullnes==1 ||  cell_move->y+2>=3+4*n || cell_move->x+8>=1+8*n )
+        if(visual_map[cell_move->y+2][cell_move->x+8].fullnes==1 ||  cell_move->y+2>=2+4*n || cell_move->x+8>=8*n )
             return 1;
         break;
     case 6:
-        if(visual_map[cell_move->y+2][cell_move->x-8].fullnes==1  || cell_move->y+2>=3+4*n || cell_move->x-8<=0)
+        if(visual_map[cell_move->y+2][cell_move->x-8].fullnes==1  || cell_move->y+2>=2+4*n || cell_move->x-8<=1)
             return 1;
         break;
     }
@@ -39,7 +40,66 @@ int permision_move(CELL * cell_move,int n,PLACE visual_map[3+4*n][1+8*n],int ope
 }
 
 
+int boost_enerjy(int  cell_choosed,int n,PLACE  visual_map[3+4*n][1+8*n],CELL * list)
+{
+    CELL * cell_gain;
+                for ( cell_gain=list; cell_gain->number!=cell_choosed; cell_gain=cell_gain->next);
+    if(cell_gain->enerjy==100)
+        return -1;
 
+
+        int temp_enerj;
+        sscanf(visual_map[cell_gain->y][cell_gain->x].score,"%d",&temp_enerj);
+
+        if(temp_enerj==0)
+            return -1;
+
+    if(temp_enerj > 15)
+    {
+
+        if(cell_gain->enerjy<=85){
+        temp_enerj-= 15;
+        cell_gain->enerjy+=15;
+        }
+        if(cell_gain->enerjy>85)
+        {
+            temp_enerj -= 100-cell_gain->enerjy;
+            cell_gain->enerjy=100;
+        }
+    }
+
+      else
+    {
+
+        if(cell_gain->enerjy<=85){
+        temp_enerj-= 15;
+        cell_gain->enerjy+=15;
+        }
+        if(cell_gain->enerjy>85)
+        {
+            temp_enerj -= 100-cell_gain->enerjy;
+            cell_gain->enerjy=100;
+        }
+    }
+
+        if(temp_enerj < 15)
+        {
+         if(cell_gain->enerjy<=85){
+        cell_gain->enerjy+=temp_enerj;
+        temp_enerj=0;
+        }
+//        if(cell_gain->enerjy>85)
+//        {
+//            if(temp_enerj)
+//        }
+
+        }
+        char temp_str[4];
+        sprintf(temp_str,"%d",temp_enerj);
+        strcpy(visual_map[cell_gain->y][cell_gain->x].score,temp_str);
+        return 0;
+
+}
 
 
 
