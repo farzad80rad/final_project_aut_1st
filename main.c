@@ -137,7 +137,9 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
         case 4:
             save_map(n,visual_map);
             save_player(list,count_cells,1);
-            save_mood(1);
+            save_mood(1,1);
+            system("cls");
+            printing_map(n,visual_map,list,list2);
             break;
         case 5:
             flag=0;
@@ -145,6 +147,130 @@ void movment_2(int n, PLACE visual_map[3+4*n][1+8*n], CELL *list,CELL *list2,int
         }
     }
     system("cls");
+}
+
+
+void load_mood_game_2(int n,CELL * list,CELL * list2,PLACE visual_map[3+4*n][1+8*n],int turn)
+{
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &ConsoleInfo);
+    int originalAttrs = ConsoleInfo.wAttributes;
+
+
+
+    system("cls");
+    printing_map(n,visual_map,list,list2);
+
+
+    int count_cell1=0,count_cell2=0;
+
+        for(CELL * current = list;current != NULL; current=current->next)
+        count_cell1++;
+
+            for(CELL * current = list2;current != NULL; current=current->next)
+        count_cell2++;
+
+    int cell_choosed;
+    int oper=1;
+    int flag =1;
+
+    system("cls");
+    printing_map(n,visual_map,list,list2);
+    while(flag)
+    {
+
+        if(turn%2==0)
+        {
+            SetConsoleTextAttribute(hConsole, 9);
+            printf("tern of player 2\n");
+
+            for (CELL * current=list2; current!=NULL; current=current->next)
+            {
+                printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+
+            }
+            printf("\n");
+            SetConsoleTextAttribute(hConsole, originalAttrs);
+        }
+        else
+        {
+
+            SetConsoleTextAttribute(hConsole, 6);
+            printf("tern of player 1\n");
+
+            for (CELL * current=list; current!=NULL; current=current->next)
+            {
+                printf("%d- coordinate(%d,%d)  name:%7s      energy=%d \n",current->number,n-(current->y-2)/4 - 1,(current->x-4)/8,current->name,current->enerjy);
+            }
+            SetConsoleTextAttribute(hConsole, originalAttrs);
+        }
+
+        printf("choose a cell\n");
+        scanf("%d",&cell_choosed);
+
+
+        printf("[1]Move\n[2]Split a cell\n[3]Boost energy\n[4]Save\n[5]Exit\n");
+        //printf("enter oper\n");
+        scanf("%d",&oper);
+
+        int temp_count;
+        switch (oper)
+        {
+        case 1:
+            movment_2(n,visual_map,list,list2,&turn,cell_choosed);
+            break;
+        case 2:
+            temp_count=mitosis_action(n,visual_map,list,list2,turn,cell_choosed,count_cell1,count_cell2);
+            if(turn%2==1)
+                count_cell1+=temp_count;
+            else
+                count_cell2+=temp_count;
+
+            if(temp_count==0)
+            {
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+                continue;
+            }
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            break;
+        case 3:
+            if(boost_enerjy(cell_choosed,n,visual_map,list,list2,turn))
+            {
+                system("cls");
+                printing_map(n,visual_map,list,list2);
+                printf("not allowed\n");
+                continue;
+            }
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+
+
+            break;
+
+        case 4:
+            save_map(n,visual_map);
+            save_player(list,count_cell1,1);
+            save_player(list2,count_cell2,2);
+            save_mood(2,turn);
+            turn++;
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            break;
+        case 5:
+            flag=0;
+            break;
+        }
+        turn++;
+    }
+    system("cls");
+
+
+
 }
 
 
@@ -277,7 +403,17 @@ void multiplay_game(void)
             break;
 
         case 4:
+            save_map(n,visual_map);
+            save_player(list,count_cell1,1);
+            save_player(list2,count_cell2,2);
+            save_mood(2,turn);
+            turn++;
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            break;
+        case 5:
             flag=0;
+            break;
         }
         turn++;
     }
@@ -369,7 +505,7 @@ void single_game(void)
         case 4:
             save_map(n,visual_map);
             save_player(list,count_cells,1);
-            save_mood(1);
+            save_mood(1,1);
             break;
         case 5:
             flag=0;
@@ -395,6 +531,7 @@ int main()
 
         if (a==1)
         {
+            int turn;
             CELL *list=NULL,*list2=NULL;
             int n,mood;
             n=scan_n();
@@ -404,11 +541,17 @@ int main()
             mood = load_mood();
 
             load_player(&list,1);
-            if(mood==2)
+            if(mood==2){
             load_player(&list2,2);
+            turn = load_turn();
+
+            }
 
             if(mood==1)
             load_mood_game_1(n,list,visual_map);
+            if (mood ==2)
+            load_mood_game_2(n,list,list2,visual_map,turn);
+
 
         }
 
