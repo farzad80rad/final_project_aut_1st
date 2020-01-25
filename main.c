@@ -6,6 +6,7 @@
 #include <time.h>
 #include "move.h"
 #include "load_save.h"
+#include "map_editor.h"
 
 
 
@@ -522,12 +523,11 @@ int main()
     int a;
     while(1)
     {
-        printf("1- load\n2- new single game\n3- new multi player game\n4- exit\n");
+        system("cls");
+        printf("1- load\n2- new single game\n3- new multi player game\n4- map_editor\n5- exit\n");
         scanf("%d",&a);
         if (a==2)
-        {
             single_game();
-        }
 
         if (a==1)
         {
@@ -556,14 +556,12 @@ int main()
         }
 
         if(a==3)
-        {
             multiplay_game();
-        }
-
         if(a==4)
-        {
+        system("cls");
+            make_map();
+        if(a==5)
             break;
-        }
     }
 
 }
