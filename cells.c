@@ -62,10 +62,10 @@ void naming(char name[8],int count_cells)
 {
     static int counter=-1;
     counter++;
-    char names[][8]= {"sam","bili","bob","ali","jany","warior","jacky","mom","wow","jizz","dany","popy","nazy","iran","danis","venom","batman","halk","boy","farzad","hadi","A.H","armin","sina","killer","nooo","yeees","fish","cat","you","me","they","aahhh"
-                      "freind","BIJ","love","fire","water","ground","wind","book","CEIT","master","origin","dog","moon","sun","tree","~_~","-_-","+_+","=_=","hii","howwm","ice","github","int","float"
-                     };
-    static int used[58]= {-1},element=0;
+    char names[][8]= {"sam","bili","bob","ali","jany","warior","jacky","mom","wow","jizz","dany","popy","nazy","iran","danis","venom","batman","halk","boy","farzad","hadi","A.H","armin","sina","killer","nooo","yeees","fish","cat","you","me","they","aahhh","feyj"
+                      "freind","BIJ","love","fire","water","ground","wind","book","CEIT","master","origin","dog","moon","sun","tree","~_~","-_-","+_+","=_=","hii","howwm","ice","github","int","float","word","pdf","srt","str","sea","sky","north","witcher","asad"
+                       "alex","rick","Mortie","bean","ben","naruto","natso","happy","ken","pete","door","home","footbal","tea","math","OS","wifi","parham","saman","javad","ahmad","apple","banana","momo","esnat","lone","pakhol","oskol","kheytal","yahya","omid","F.mort"};
+    static int used[100]= {-1},element=0;
     int oper;
     printf("%d  1-make the name randomly     2-make it yourself\n ",counter%count_cells +1);
     scanf("%d",&oper);
@@ -74,8 +74,8 @@ void naming(char name[8],int count_cells)
         while(1)
         {
             int temp,flag=1;
-            temp=rand()%58;
-            for(int i=0; i<58; i++)
+            temp=rand()%100;
+            for(int i=0; i<100; i++)
                 if(temp==used[i])
                     flag=0;
             if(flag)

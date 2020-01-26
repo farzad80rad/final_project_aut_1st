@@ -162,18 +162,34 @@ int mitosis_action(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2,i
     else
         for ( cell_mitosis=list2; cell_mitosis->number!=cell_choosed; cell_mitosis=cell_mitosis->next);
 
-    if(visual_map[cell_mitosis->y][cell_mitosis->x].type!=Mitosis)
+    if(visual_map[cell_mitosis->y][cell_mitosis->x].type!=Mitosis){
+        system("cls");
+        printing_map(n,visual_map,list,list2);
+    printf("not a mitosis place.\n");
         return 0;
-    if(cell_mitosis->enerjy<80)
+    }
+    if(cell_mitosis->enerjy<80){
+        system("cls");
+        printing_map(n,visual_map,list,list2);
+        printf("not enough energy.\n");
         return 0;
+    }
 
     if(turn%2==1)
     {
-        if(count_cells1==9)
+        if(count_cells1==9){
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            printf("you reach the limitation.\n");
             return 0;
+        }
     }
-    else if(count_cells2==9)
+    else if(count_cells2==9){
+        system("cls");
+        printing_map(n,visual_map,list,list2);
+        printf("you reach the limitation.\n");
         return 0;
+    }
 
     int noooooooooob=0;
     int resx,resy,temp;
@@ -183,16 +199,23 @@ int mitosis_action(int n,PLACE visual_map[3+4*n][1+8*n],CELL *list,CELL *list2,i
         noooooooooob++;
         if(noooooooooob ==100)
         {
-            printf("not allowed\n");
+            system("cls");
+            printing_map(n,visual_map,list,list2);
+            printf("there is no empty place near you\n");
             return 0;
         }
     }
     while(permision_move(cell_mitosis,n,visual_map,temp));
 
-    if (turn%2 ==1)
+    if (turn%2 ==1){
         current =  make_add_nod(cell_mitosis->x,cell_mitosis->y,list,count_cells1)  ;
-    else
+        naming(cell_mitosis->name,count_cells1);
+    }
+    else{
         current = make_add_nod(cell_mitosis->x,cell_mitosis->y,list2,count_cells2);
+                naming(cell_mitosis->name,count_cells2);
+
+    }
 
     move_mitos(current,n,visual_map,temp);
     cell_mitosis->enerjy=40;
